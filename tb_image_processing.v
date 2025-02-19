@@ -1,0 +1,69 @@
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 09.02.2025 18:41:58
+// Design Name: 
+// Module Name: tb_image_processing
+
+
+`timescale 1ns/1ps /**************************************************/ 
+/******* Testbench for simulation ****************/
+/*********************************************/ 
+ // fpga4student.com FPGA projects, Verilog projects, VHDL projects
+// Verilog project: Image processing in Verilog
+ // include definition file module tb_simulation; 
+//------------------ // Internal Signals 
+//------------------------------------------------- 
+`include "C:\Users\Tingu\image_processing_project_5\image_processing_project_5.srcs\sources_1\new\definitions.v"
+module tb_image_processing;
+reg HCLK, HRESETn; 
+wire vsync; 
+wire hsync;
+wire [ 7 : 0] data_R0; 
+wire [ 7 : 0] data_G0; 
+wire [ 7 : 0] data_B0; 
+wire [ 7 : 0] data_R1; 
+wire [ 7 : 0] data_G1; 
+wire [ 7 : 0] data_B1; 
+wire enc_done; 
+image_processor #(.INFILE(`INPUTFILENAME)) 
+u_image_processor 
+( .clock (HCLK ), 
+.reset_n (HRESETn ),
+ .vsync (vsync ), 
+.hsync (hsync ), 
+.red_even (data_R0 ),
+ .green_even (data_G0 ), 
+.blue_even (data_B0 ), 
+.red_odd (data_R1 ), 
+.green_odd (data_G1 ), 
+.blue_odd (data_B1 ), 
+.processing_done (enc_done) 
+); 
+image_write #(.INFILE(`OUTPUTFILENAME)) 
+u_image_write ( 
+.HCLK(HCLK), 
+.HRESETn(HRESETn),
+ .hsync(hsync), 
+.DATA_WRITE_R0(data_R0),
+ .DATA_WRITE_G0(data_G0),
+ .DATA_WRITE_B0(data_B0), 
+.DATA_WRITE_R1(data_R1), 
+.DATA_WRITE_G1(data_G1), 
+.DATA_WRITE_B1(data_B1),
+ .Write_Done()
+ ); 
+//------------- // Test Vectors 
+//------------------------------------- 
+initial 
+begin 
+HCLK = 0; 
+forever #10 HCLK = ~HCLK; 
+end 
+initial 
+begin 
+HRESETn = 0; 
+#25 HRESETn = 1; 
+#6000000;
+end endmodule
